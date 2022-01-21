@@ -18,9 +18,9 @@ export class WsExceptionFilter extends BaseWsExceptionFilter {
 
   handleError(client, exception: WsException | HttpException) {
     if (exception instanceof BadRequestException) {
-      client.emit(EventEmit.ERROR, 'Incorrect room key');
+      client.emit(EventEmit.ERROR, { text: 'Incorrect room key' });
     } else if (exception instanceof WsInvalidNameException) {
-      client.emit(EventEmit.ERROR, 'Incorrect username');
+      client.emit(EventEmit.ERROR, { text: 'Incorrect username' });
     }
   }
 }
