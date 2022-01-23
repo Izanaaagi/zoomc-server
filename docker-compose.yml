@@ -1,39 +1,42 @@
-version: '3.0'
+version: '3.8'
 
 services:
-  main:
-    container_name: main
+  dev:
+    container_name: nestjs_api_dev
+    image: nestjs-api-dev:1.0.0
     build:
       context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:debug
     env_file:
-      - docker.env
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - nesjs-network
     volumes:
       - .:/app
       - /app/node_modules
+    restart: unless-stopped
+  prod:
+    container_name: nestjs_api_prod
+    image: nestjs-api-prod:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    env_file:
+      - .env
     ports:
-      - 5000:5000
-      - 9229:9229
-    command: npm run start:dev
-    #    depends_on:
-    #      - postgres
-    restart: always
-#  postgres:
-#    container_name: postgres
-#    image: postgres:latest
-#    env_file:
-#      - docker.env
-#    environment:
-#      PG_DATA: /var/lib/postgresql/data
-#    ports:
-#      - 5432:5432
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
-#    restart: always
-#  adminer:
-#    image: adminer
-#    restart: always
-#    ports:
-#      - 8080:8080
+      - ${PORT}:${PORT}
+    networks:
+      - nesjs-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
 
-#volumes:
-#  pgdata:
+networks:
+  nesjs-network:
